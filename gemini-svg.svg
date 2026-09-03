@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="position: fixed; inset: 0;">
+  <foreignObject x="0" y="0" width="100%" height="100%">
+    <body xmlns="http://www.w3.org/1999/xhtml" lang="en" style="margin: 0; width: 100%; height: 100%; min-height: 100vh; overflow: auto;">
+
+      <div id="root"></div>
+
+      <script><![CDATA[
+        // 1. The DOM polyfill shim (keeps SVG acting like an HTML document)
+        (() => {
+          const ns = 'http://www.w3.org/1999/xhtml';
+          const body = document.querySelector('body');
+          if (!body) return;
+          const svgRoot = document.documentElement;
+          const head = document.createElementNS(ns, 'head');
+          body.prepend(head);
+          const htmlRoot = body.parentElement && body.parentElement.namespaceURI === ns ? body.parentElement : body;
+          try { Object.defineProperty(document, 'head', { configurable: true, get() { return head; } }); } catch {}
+          try { Object.defineProperty(document, 'body', { configurable: true, get() { return body; } }); } catch {}
+          try { Object.defineProperty(document, 'documentElement', { configurable: true, get() { return htmlRoot; } }); } catch {}
+          
+          const originalCreateElement = document.createElement.bind(document);
+          document.createElement = function createElement(tagName, options) {
+            return typeof tagName === 'string'
+              ? document.createElementNS(ns, tagName, options)
+              : originalCreateElement(tagName, options);
+          };
+        })();
+
+        // 2. Dynamically load your app code from GitHub / jsDelivr raw links
+        const appScript = document.createElement('script');
+        appScript.type = 'module';
+        // Replace this with your actual raw jsDelivr link to your JS/app bundle logic
+        appScript.src = 'https://cdn.jsdelivr.net/gh/YOUR_USERNAME/YOUR_REPO@main/your-app-logic.js';
+        document.body.appendChild(appScript);
+      ]]></script>
+
+    </body>
+  </foreignObject>
+</svg>
